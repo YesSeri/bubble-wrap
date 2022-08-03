@@ -9,10 +9,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 buddy-alloc = { version = "0.4.1", optional = true }
-arrayvec = "0.7.2"
-console_error_panic_hook = "0.1.7"
-stdweb = "0.4.20"
-wasm-bindgen = "0.2.82"
+#arrayvec = "0.7.2"
 
 [profile.release]
 opt-level = "z"
