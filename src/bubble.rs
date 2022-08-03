@@ -8,11 +8,18 @@ pub struct Bubble {
     pub point: Point,
     pub diameter: u8,
     pub speed: GravSpeed,
-    pub i: i32,
     pub ticker: u8,
 }
 
 impl Bubble {
+    pub fn new(point: Point, diameter: u8, speed: i8) -> Self {
+        Self {
+            point,
+            diameter: 8,
+            speed: GravSpeed::new(speed),
+            ticker: 0,
+        }
+    }
     pub fn draw(&self) {
         set_draw_colors(0x43);
         oval(
@@ -28,23 +35,18 @@ impl Bubble {
     pub fn update(&mut self) {
         self.ticker += 1;
 
-        if self.ticker % 2 == 0 {
+        if self.ticker % 3 != 0 && self.ticker % 7 != 0 {
             self.speed.add_gravity();
-            self.ticker = 0;
         }
 
         self.movement();
-        // if self.speed.right {
-        //     self.move_right();
-        // } else {
-        //     self.move_left();
-        // }
     }
 
     fn movement(&mut self) {
         self.point.y = (self.point.y as i16 + self.speed.y as i16) as u8;
 
         if self.point.level && (self.point.y > (80 - self.diameter)) {
+            self.ticker = 0;
             self.point.y = 80 - self.diameter;
             // This ensures an even bounce after first bounce.
             if self.speed.y % 2 != 0 {
@@ -54,6 +56,7 @@ impl Bubble {
         }
 
         if self.point.y > (160 - self.diameter) {
+            self.ticker = 0;
             if self.speed.y % 2 != 0 {
                 self.speed.y -= 1;
             }

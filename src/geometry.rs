@@ -11,7 +11,8 @@ pub struct Point {
     pub level: bool,
 }
 impl Point {
-    pub const fn new(x: u8, y: u8, level: bool) -> Self {
+    pub const fn new(x: u8, y: u8) -> Self {
+        let level = y < 80;
         Point { x, y, level }
     }
     // pub fn right(&mut self) {

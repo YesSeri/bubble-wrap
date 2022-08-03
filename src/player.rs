@@ -37,7 +37,7 @@ impl Player {
     const PLAYER: [u8; 32] = [ 0xf0,0x03,0xc0,0x00,0x01,0x55,0x06,0x96,0x16,0x96,0x15,0x55,0x15,0x55,0x2a,0x5a,0xea,0xaa,0xea,0xaa,0xea,0xaa,0xea,0xaa,0xea,0xaa,0xeb,0xfa,0xdf,0xf7,0xc3,0xf0 ];
     pub const fn new() -> Self {
         Self {
-            point: Point::new(5, 160, false),
+            point: Point::new(5, 160),
             projectile: None,
         }
     }
@@ -87,7 +87,7 @@ impl Player {
     }
     fn mid_point(&self) -> Point {
         let (_, x) = Point::wrap_add(self.point.x, (Player::PLAYER_WIDTH / 2) as u8);
-        Point::new(x, self.point.y, self.point.level)
+        Point::new(x, self.point.y)
     }
 }
 impl Moveable for Player {
@@ -121,7 +121,7 @@ pub struct Projectile {
 impl Projectile {
     fn new(p: Point) -> Option<Self> {
         Some(Self {
-            end: Point::new(p.x, p.y - 1, p.level),
+            end: Point::new(p.x, p.y - 16),
             start: p,
             speed: Speed {
                 x: 0,

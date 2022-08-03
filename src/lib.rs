@@ -28,11 +28,23 @@ use wasm4::*;
 #[no_mangle]
 fn update() {
     unsafe {
-		if GAME.game_over {
-			return
-		}
-        GAME.update();
         GAME.draw();
+        match GAME.game_state {
+            game::GameState::Playing => {
+                GAME.update();
+            }
+            game::GameState::GameOver => {
+                text("GAME OVER!", 40, 50);
+            }
+            game::GameState::Victory => {
+                text("YOU HAVE WON!", 30, 50);
+            }
+        }
+        // if GAME.game_over {
+        //     GAME.draw();
+        //     text("GAME OVER!", 40, 50);
+        //     return;
+        // }
     }
 }
 #[no_mangle]
