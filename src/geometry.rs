@@ -1,6 +1,3 @@
-use crate::wasm4::*;
-type PointResult = std::result::Result<(), OutOfBoundsError>;
-
 #[derive(Debug, Clone)]
 pub struct OutOfBoundsError;
 
@@ -30,23 +27,18 @@ impl Point {
     //     self.x = x;
     // }
     // pub fn up(&mut self, speed: i8) {
-    //     // let s = format!("{:?}", &self);
-    //     // trace(s);
     //     self.y = (self.y as i16 - speed as i16) as u8;
     //     // If y is bigger than screen that can crash game. it can lead to two u8s: 13 - 255.
     // }
-    pub fn wrap_add(x: u8, y: u8) -> (bool, u8) {
-        let xpr = x + y;
-        let wrapped = xpr / 160;
-        (wrapped != 0, xpr % 160)
-    }
-    pub fn wrap_sub(x: u8, y: u8) -> (bool, u8) {
-        // let z = (x as i16 - y as i16) as u8;
-
-        // let s = format!("{x} - {y} = {z}",);
-        let z = x.checked_sub(y);
-        (z.is_none(), z.unwrap_or(159))
-    }
+    // pub fn wrap_add(x: u8, y: u8) -> (bool, u8) {
+    //     let xpr = x + y;
+    //     let wrapped = xpr / 160;
+    //     (wrapped != 0, xpr % 160)
+    // }
+    // pub fn wrap_sub(x: u8, y: u8) -> (bool, u8) {
+    //     let z = x.checked_sub(y);
+    //     (z.is_none(), z.unwrap_or(159))
+    // }
 
     pub fn switch_level(&mut self) {
         if self.level {

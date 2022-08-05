@@ -1,7 +1,7 @@
 use crate::geometry::{Moveable, Point, Speed};
 use crate::palette::set_draw_colors;
 use crate::wasm4;
-use crate::wasm4::{blit, line, trace};
+use crate::wasm4::{blit, line};
 
 // Small
 // const PLAYER_WIDTH: u32 = 4;
@@ -18,6 +18,7 @@ use crate::wasm4::{blit, line, trace};
 pub struct Player {
     pub point: Point,
     pub projectile: Option<Projectile>,
+    speed: Speed,
 }
 
 impl Player {
@@ -39,6 +40,7 @@ impl Player {
         Self {
             point: Point::new(5, 160),
             projectile: None,
+            speed: Speed::new(),
         }
     }
     pub fn draw(&self) {
@@ -57,8 +59,6 @@ impl Player {
         }
     }
     pub fn update(&mut self) {
-        // let s = format!("{:?}", &self);
-        // trace(s);
         let gamepad = unsafe { *wasm4::GAMEPAD1 };
         if gamepad & wasm4::BUTTON_RIGHT != 0 {
             self.move_right();
@@ -86,13 +86,19 @@ impl Player {
         }
     }
     fn mid_point(&self) -> Point {
-        let (_, x) = Point::wrap_add(self.point.x, (Player::PLAYER_WIDTH / 2) as u8);
-        Point::new(x, self.point.y)
+        let x_mid = self.point.x + Player::PLAYER_WIDTH as u8 / 2;
+        if x_mid <= 160 {
+            Point::new(x_mid, self.point.y)
+        } else {
+            Point::new(160, self.point.y)
+        }
     }
 }
 impl Moveable for Player {
     fn move_right(&mut self) {
-        let x = self.point.x + 2;
+        self.speed.right = true;
+        self.speed.x = 2;
+        let x = self.point.x + self.speed.x;
 
         self.point.x = {
             if x < 160 {
@@ -104,7 +110,9 @@ impl Moveable for Player {
         }
     }
     fn move_left(&mut self) {
-        let x = self.point.x.checked_sub(2);
+        self.speed.right = false;
+        self.speed.x = 2;
+        let x = self.point.x.checked_sub(self.speed.x);
         self.point.x = x.unwrap_or_else(|| {
             self.point.switch_level();
             159
@@ -143,13 +151,23 @@ impl Projectile {
         self.move_up();
     }
     pub fn draw(&self) {
-        // let height: i32 = PLAYER_HEIGHT.try_into().unwrap_or(0);
-        line(
-            self.start.x.into(),
-            self.start.y.into(),
-            self.end.x.into(),
-            self.end.y.into(),
-        );
+        let x1 = self.start.x;
+        // let y1 = self.start.y;
+        let x2 = self.end.x;
+        let y2 = self.end.y;
+        let y1 = {
+            // Makes the projectile grow downwards as well as upwards, so it looks shoot from player head.
+            let player_top_y = 160 - Player::PLAYER_HEIGHT as u8;
+            let diff = player_top_y - y2;
+
+            if player_top_y + diff > 160 {
+                160
+            } else {
+                player_top_y + diff
+            }
+            // let diff = self.start.y - Player::PLAYER_HEIGHT as u8- self.end.y;
+        };
+        line(x1.into(), y1.into(), x2.into(), y2.into());
     }
 }
 

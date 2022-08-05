@@ -1,7 +1,6 @@
-use crate::geometry::{GravSpeed, Moveable, Point, Speed};
-use crate::palette::{set_draw_colors, set_palette};
+use crate::geometry::{GravSpeed, Moveable, Point};
+use crate::palette::set_draw_colors;
 use crate::wasm4::oval;
-use crate::wasm4::trace;
 
 #[derive(Debug)]
 pub struct Bubble {
@@ -15,7 +14,7 @@ impl Bubble {
     pub fn new(point: Point, diameter: u8, speed: i8) -> Self {
         Self {
             point,
-            diameter: 8,
+            diameter,
             speed: GravSpeed::new(speed),
             ticker: 0,
         }
@@ -46,20 +45,14 @@ impl Bubble {
         self.point.y = (self.point.y as i16 + self.speed.y as i16) as u8;
 
         if self.point.level && (self.point.y > (80 - self.diameter)) {
-            self.ticker = 0;
-            self.point.y = 80 - self.diameter;
             // This ensures an even bounce after first bounce.
-            if self.speed.y % 2 != 0 {
-                self.speed.y -= 1;
-            }
+            self.clamp_speed();
+            self.point.y = 80 - self.diameter;
             self.speed.y = -self.speed.y;
         }
 
         if self.point.y > (160 - self.diameter) {
-            self.ticker = 0;
-            if self.speed.y % 2 != 0 {
-                self.speed.y -= 1;
-            }
+            self.clamp_speed();
             self.point.y = 160 - self.diameter;
             self.speed.y = -self.speed.y;
         }
@@ -68,6 +61,16 @@ impl Bubble {
             self.move_right();
         } else {
             self.move_left();
+        }
+    }
+    fn clamp_speed(&mut self) {
+        self.ticker = 0;
+        if self.speed.y % 2 != 0 {
+            self.speed.y -= 1;
+        }
+        let min_speed = 6;
+        if self.speed.y < min_speed {
+            self.speed.y = min_speed;
         }
     }
 }
@@ -87,10 +90,15 @@ impl Moveable for Bubble {
         }
     }
     fn move_left(&mut self) {
-        let x = self.point.x.checked_sub(self.speed.x.try_into().unwrap());
-        self.point.x = x.unwrap_or_else(|| {
-            self.point.switch_level();
-            159
-        })
+        unsafe {
+            let x = self
+                .point
+                .x
+                .checked_sub(self.speed.x.try_into().unwrap_unchecked());
+            self.point.x = x.unwrap_or_else(|| {
+                self.point.switch_level();
+                159
+            })
+        }
     }
 }

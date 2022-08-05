@@ -2,6 +2,40 @@
 
 A game written in Rust for the [WASM-4](https://wasm4.org) fantasy console.
 
+## Smaller size tips
+
+### cargo.toml
+
+```toml
+[profile.release]
+opt-level = "z"
+lto = true
+strip = true
+```
+
+### vector
+
+`wasm-opt -Oz --zero-filled-memory --strip-producers --dce -o target/wasm-snip-output.wasm target/cart.wasm`
+
+Use heapless vec. I compared [arrayvec](https://github.com/bluss/arrayvec) and [heapless](https://github.com/japaric/heapless) and for my binary heapless was smaller.
+
+cargo.toml
+
+```toml
+[dependencies]
+heapless = "0.7.15"
+```
+
+### Strings and formatting
+
+Remove all string formatting.
+
+I use this for debugging: `trace(format!("{:?}", (&self)));`. Make sure all of these are removed when building. Otherwise the binary size becomes HUGE!
+
+### panic!
+
+Don't panic. Dont use `unwrap()`, or other statements that panic. Use `unwrap_or(x)` or `unwrap_or_else(|| x*2)` or `unwrap_unchecked()` Even if you use wasm-snip the binary is still bigger than if you just didn't use `unwrap()` at all.
+
 ## Idea
 
 Bubble shooter. A little figure is running trying to shot bubbles. The bubbles bounce on the floor. The floor is wrapping, and it is two levels. There can also be walls that stops the balls and/or the player.
