@@ -1,7 +1,7 @@
-// #![allow(unused_imports)]
-// #![allow(clippy::collapsible_if)]
-// #![allow(dead_code)]
-// #![allow(unused_variables)]
+#![allow(unused_imports)]
+#![allow(clippy::collapsible_if)]
+#![allow(dead_code)]
+#![allow(unused_variables)]
 // #![no_std]
 // #![no_main]
 // #[panic_handler]
@@ -17,6 +17,7 @@ mod geometry;
 mod palette;
 mod player;
 mod wasm4;
+
 pub use bubble::Bubble;
 pub use game::Game;
 pub use geometry::{Point, Speed};
@@ -25,7 +26,7 @@ pub use player::Player;
 use wasm4::*;
 
 #[rustfmt::skip]
-const wall: [u8; 8] = [    
+const WALL: [u8; 8] = [    
 	0b00000000,
     0b00000010,
     0b00000000,
@@ -35,21 +36,36 @@ const wall: [u8; 8] = [
     0b01000000,
     0b00000000,
 ];
+// const RANDOM_BYTES: &[u8; 26] = b"lzm4umqkz93nox983azog[pa[b";
+// static mut RAND_IDX: u8 = 0;
+// const RAND_MAX: u8 = RANDOM_BYTES.len() as u8 * 4;
+// fn get_random_value() -> bool {
+//     let (i, v) = unsafe {
+//         if RAND_IDX >= RAND_MAX {
+//             RAND_IDX = 0;
+//         }
+//         let i = RAND_IDX % 4;
+
+//         let v = RANDOM_BYTES.get_unchecked(i as usize);
+//         (i, v)
+//     };
+
+//     let i: u8 = 1 << i;
+//     let z = v & i;
+//     unsafe {
+//         RAND_IDX += 1;
+//     }
+//     z == 0
+// }
 fn draw_wall() {
-    set_draw_colors(0x21);
+    set_draw_colors(0x13);
     for y in 0..20 {
         for x in 0..20 {
-            if (y - x) % 3 == 0 && x % 7 == 0 || y % 5 == 0 && (x - y) % 3 == 0 {
-                blit(&wall, x * 8, y * 8, 8, 8, BLIT_1BPP);
-            } else if (y * 7 / 5 - x / 2) % 2 == 0 {
-                blit(&wall, x * 8, y * 8, 8, 8, BLIT_1BPP | BLIT_FLIP_Y);
-            } else if y % 3 == 0 && x % 4 == 0 {
-                // blit(&wall, x * 8, y * 8, 8, 8, BLIT_1BPP | BLIT_FLIP_X);
-            }
+            blit(&WALL, x * 8, y * 8, 8, 8, BLIT_1BPP);
         }
     }
 
-    set_draw_colors(0x1213);
+    set_draw_colors(0x4);
     line(0, 80, 160, 80);
 
     set_draw_colors(0x1234);
@@ -81,6 +97,10 @@ fn update() {
         //     return;
         // }
     }
+    show_color_palette();
+}
+
+fn show_color_palette() {
     for color in 1..=4 {
         let color = color;
         set_draw_colors(color.try_into().unwrap());
@@ -100,6 +120,8 @@ fn update() {
     hline(60, 20, 40);
     vline(100, 0, 21);
 }
+static mut f: u32 = 0;
+static mut t: u32 = 0;
 #[no_mangle]
 fn start() {
     palette::set_palette([0xdbd7d3, 0xe5b083, 0x426e5d, 0x20283d]);

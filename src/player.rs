@@ -44,7 +44,7 @@ impl Player {
         }
     }
     pub fn draw(&self) {
-        set_draw_colors(0x0423);
+        set_draw_colors(0x0424);
         blit(
             &Player::PLAYER,
             self.point.x as i32,

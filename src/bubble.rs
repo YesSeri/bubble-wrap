@@ -1,6 +1,6 @@
 use crate::geometry::{GravSpeed, Moveable, Point};
 use crate::palette::set_draw_colors;
-use crate::wasm4::oval;
+use crate::wasm4::{oval, rect};
 
 #[derive(Debug)]
 pub struct Bubble {
@@ -20,13 +20,42 @@ impl Bubble {
         }
     }
     pub fn draw(&self) {
-        set_draw_colors(0x43);
+        set_draw_colors(0x41);
         oval(
             self.point.x.into(),
             self.point.y.into(),
             self.diameter.into(),
             self.diameter.into(),
         );
+
+        set_draw_colors(0x44);
+
+        for i in 0..2 {
+            rect(
+                self.point.x as i32 + self.diameter as i32 / 2 + i,
+                self.point.y as i32 + self.diameter as i32 / 2 + i,
+                1,
+                1,
+            );
+            rect(
+                self.point.x as i32 + self.diameter as i32 / 2 - i,
+                self.point.y as i32 + self.diameter as i32 / 2 - i,
+                1,
+                1,
+            );
+            rect(
+                self.point.x as i32 + self.diameter as i32 / 2 + i,
+                self.point.y as i32 + self.diameter as i32 / 2 - i,
+                1,
+                1,
+            );
+            rect(
+                self.point.x as i32 + self.diameter as i32 / 2 - i,
+                self.point.y as i32 + self.diameter as i32 / 2 + i,
+                1,
+                1,
+            );
+        }
 
         set_draw_colors(0x1234);
     }
