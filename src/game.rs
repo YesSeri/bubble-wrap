@@ -1,6 +1,6 @@
 use crate::bubble::Bubble;
 use crate::player::Player;
-use crate::{wasm4::*, Point};
+use crate::Point;
 // use arrayvec::ArrayVec as Vec;
 use heapless::Vec;
 #[derive(Debug)]
@@ -42,13 +42,11 @@ impl Game {
 
     pub fn update(&mut self) {
         self.frame_count += 1;
-        if self.frame_count % 1 == 0 {
-            self.player.update();
+        self.player.update();
 
-            self.check_projectile_hits();
-            for bubble in self.bubbles.iter_mut() {
-                bubble.update();
-            }
+        self.check_projectile_hits();
+        for bubble in self.bubbles.iter_mut() {
+            bubble.update();
         }
         if self.check_player_hit() {
             self.game_state = GameState::GameOver;

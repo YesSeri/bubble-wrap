@@ -1,20 +1,19 @@
 // bars: 24
 // total subbeats: 384
 
-use crate::wasm4::*;
+use crate::wasm4::{tone, TONE_PULSE1, TONE_PULSE2, TONE_TRIANGLE};
 const VOICE_0_VOL: u32 = 60;
 const VOICE_1_VOL: u32 = 60;
 const VOICE_2_VOL: u32 = 100;
-const VOICE_3_VOL: u32 = 100;
-const VOICE_4_VOL: u32 = 100;
+// const VOICE_3_VOL: u32 = 100;
+// const VOICE_4_VOL: u32 = 100;
 
 const VOICE_0_DUR: u32 = 13;
 const VOICE_1_DUR: u32 = 13;
 const VOICE_2_DUR: u32 = 7;
-const VOICE_3_DUR: u32 = 30;
-const VOICE_4_DUR: u32 = 30;
+// const VOICE_3_DUR: u32 = 30;
+// const VOICE_4_DUR: u32 = 30;
 
-use crate::wasm4::*;
 static mut LIMITER: usize = 0;
 static mut COUNTER: usize = 100;
 

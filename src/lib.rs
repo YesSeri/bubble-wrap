@@ -1,7 +1,7 @@
-#![allow(unused_imports)]
+// #![allow(unused_imports)]
 #![allow(clippy::collapsible_if)]
-#![allow(dead_code)]
-#![allow(unused_variables)]
+// #![allow(dead_code)]
+// #![allow(unused_variables)]
 // #![no_std]
 // #![no_main]
 // #[panic_handler]
@@ -123,28 +123,28 @@ fn update() {
     // show_color_palette();
 }
 
-fn show_color_palette() {
-    for color in 1..=4 {
-        let color = color;
-        set_draw_colors(color.try_into().unwrap());
-        rect(color * 20, 0, 20, 20);
-        if color == 1 {
-            set_draw_colors(3);
-        } else {
-            set_draw_colors((color - 1).try_into().unwrap());
-        }
-        text(color.to_string(), color * 20, 0);
-        set_draw_colors(0x1234);
-    }
-    vline(19, 0, 21);
-    hline(20, 20, 40);
+// fn show_color_palette() {
+//     for color in 1..=4 {
+//         let color = color;
+//         set_draw_colors(color.try_into().unwrap());
+//         rect(color * 20, 0, 20, 20);
+//         if color == 1 {
+//             set_draw_colors(3);
+//         } else {
+//             set_draw_colors((color - 1).try_into().unwrap());
+//         }
+//         text(color.to_string(), color * 20, 0);
+//         set_draw_colors(0x1234);
+//     }
+//     vline(19, 0, 21);
+//     hline(20, 20, 40);
 
-    set_draw_colors(0x1232);
-    hline(60, 20, 40);
-    vline(100, 0, 21);
-}
-static mut f: u32 = 0;
-static mut t: u32 = 0;
+//     set_draw_colors(0x1232);
+//     hline(60, 20, 40);
+//     vline(100, 0, 21);
+// }
+// static mut f: u32 = 0;
+// static mut t: u32 = 0;
 #[no_mangle]
 fn start() {
     // palette::set_palette([0xdbd7d3, 0xe5b083, 0x426e5d, 0x20283d]);
