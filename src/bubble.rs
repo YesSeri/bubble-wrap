@@ -11,16 +11,16 @@ pub struct Bubble {
 }
 
 impl Bubble {
-    pub fn new(point: Point, diameter: u8, speed: i8) -> Self {
+    pub fn new(point: Point, diameter: u8, speed: u8, right: bool) -> Self {
         Self {
             point,
             diameter,
-            speed: GravSpeed::new(speed),
+            speed: GravSpeed::new(speed, right),
             ticker: 0,
         }
     }
     pub fn draw(&self) {
-        set_draw_colors(0x41);
+        set_draw_colors(0x42);
         oval(
             self.point.x.into(),
             self.point.y.into(),
@@ -28,7 +28,7 @@ impl Bubble {
             self.diameter.into(),
         );
 
-        set_draw_colors(0x44);
+        set_draw_colors(0x33);
 
         for i in 0..2 {
             rect(
@@ -86,7 +86,7 @@ impl Bubble {
             self.speed.y = -self.speed.y;
         }
 
-        if self.speed.x > 0 {
+        if self.speed.right {
             self.move_right();
         } else {
             self.move_left();
@@ -119,15 +119,10 @@ impl Moveable for Bubble {
         }
     }
     fn move_left(&mut self) {
-        unsafe {
-            let x = self
-                .point
-                .x
-                .checked_sub(self.speed.x.try_into().unwrap_unchecked());
-            self.point.x = x.unwrap_or_else(|| {
-                self.point.switch_level();
-                159
-            })
-        }
+        let x = self.point.x.checked_sub(self.speed.x);
+        self.point.x = x.unwrap_or_else(|| {
+            self.point.switch_level();
+            159
+        })
     }
 }

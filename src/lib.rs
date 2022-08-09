@@ -14,6 +14,7 @@ mod alloc;
 mod bubble;
 mod game;
 mod geometry;
+mod music;
 mod palette;
 mod player;
 mod wasm4;
@@ -21,6 +22,7 @@ mod wasm4;
 pub use bubble::Bubble;
 pub use game::Game;
 pub use geometry::{Point, Speed};
+use music::update_music;
 use palette::set_draw_colors;
 pub use player::Player;
 use wasm4::*;
@@ -36,27 +38,10 @@ const WALL: [u8; 8] = [
     0b01000000,
     0b00000000,
 ];
-// const RANDOM_BYTES: &[u8; 26] = b"lzm4umqkz93nox983azog[pa[b";
-// static mut RAND_IDX: u8 = 0;
-// const RAND_MAX: u8 = RANDOM_BYTES.len() as u8 * 4;
-// fn get_random_value() -> bool {
-//     let (i, v) = unsafe {
-//         if RAND_IDX >= RAND_MAX {
-//             RAND_IDX = 0;
-//         }
-//         let i = RAND_IDX % 4;
-
-//         let v = RANDOM_BYTES.get_unchecked(i as usize);
-//         (i, v)
-//     };
-
-//     let i: u8 = 1 << i;
-//     let z = v & i;
-//     unsafe {
-//         RAND_IDX += 1;
-//     }
-//     z == 0
-// }
+#[rustfmt::skip]
+const SIDE: [u8; 32] = [ 0x05, 0x6a, 0x01, 0x5a, 0x01, 0x6a, 0x01, 0xaa, 0x05, 0x6a, 0x15, 0x5a, 0x05, 0x5a, 0x05, 0x6a, 0x01, 0x6a, 0x01, 0x6a, 0x05, 0x6a, 0x05, 0xaa, 0x05, 0xaa, 0x05, 0x6a, 0x01, 0x6a, 0x05, 0xaa, ];
+#[rustfmt::skip]
+const CORNER: [u8; 64] = [ 0x00,0x00,0x00,0x00,0x00,0x10,0x01,0x56,0x01,0x55,0x55,0xaa,0x01,0x55,0x9a,0xbf,0x05,0x6a,0xab,0xff,0x15,0x5a,0xaf,0xff,0x05,0x5a,0xbf,0xff,0x05,0x6a,0xff,0xff,0x01,0x6a,0xff,0xff,0x01,0x6a,0xff,0xff,0x05,0x6a,0xff,0xff,0x05,0xaa,0xff,0xff,0x05,0xaa,0xff,0xff,0x05,0x6a,0xff,0xff,0x01,0x6a,0xff,0xff,0x05,0xaa,0xff,0xff ];
 fn draw_wall() {
     set_draw_colors(0x13);
     for y in 0..20 {
@@ -65,8 +50,45 @@ fn draw_wall() {
         }
     }
 
-    set_draw_colors(0x4);
+    set_draw_colors(0x0234);
+    for i in 1..9 {
+        blit(&SIDE, 0, i * 16, 8, 16, BLIT_2BPP);
+        blit(&SIDE, 152, i * 16, 8, 16, BLIT_2BPP | BLIT_FLIP_X);
+    }
+
     line(0, 80, 160, 80);
+    blit(&CORNER, 0, 0, 16, 16, BLIT_2BPP);
+    blit(&CORNER, 0, 80, 16, 16, BLIT_2BPP);
+
+    blit(&CORNER, 144, 0, 16, 16, BLIT_2BPP | BLIT_FLIP_X);
+    blit(&CORNER, 144, 80, 16, 16, BLIT_2BPP | BLIT_FLIP_X);
+
+    blit(&CORNER, 0, 144, 16, 16, BLIT_2BPP | BLIT_FLIP_Y);
+    blit(&CORNER, 0, 65, 16, 16, BLIT_2BPP | BLIT_FLIP_Y);
+    blit(
+        &CORNER,
+        144,
+        144,
+        16,
+        16,
+        BLIT_2BPP | BLIT_FLIP_X | BLIT_FLIP_Y,
+    );
+    blit(
+        &CORNER,
+        144,
+        65,
+        16,
+        16,
+        BLIT_2BPP | BLIT_FLIP_X | BLIT_FLIP_Y,
+    );
+
+    set_draw_colors(0x2);
+    line(16, 158, 144, 158);
+    line(16, 1, 144, 1);
+    set_draw_colors(0x4);
+    line(16, 159, 144, 159);
+    line(16, 0, 144, 0);
+    set_draw_colors(0x4);
 
     set_draw_colors(0x1234);
 }
@@ -74,6 +96,7 @@ fn draw_wall() {
 #[no_mangle]
 fn update() {
     unsafe {
+        update_music();
         draw_wall();
         GAME.draw();
         match GAME.game_state {
@@ -97,7 +120,7 @@ fn update() {
         //     return;
         // }
     }
-    show_color_palette();
+    // show_color_palette();
 }
 
 fn show_color_palette() {
@@ -124,7 +147,9 @@ static mut f: u32 = 0;
 static mut t: u32 = 0;
 #[no_mangle]
 fn start() {
-    palette::set_palette([0xdbd7d3, 0xe5b083, 0x426e5d, 0x20283d]);
+    // palette::set_palette([0xdbd7d3, 0xe5b083, 0x426e5d, 0x20283d]);
+    // palette::set_palette([0xffffff, 0xaaaaaa, 0x666666, 0x111111]);
+    palette::set_palette([0xfff6d3, 0xf9a875, 0xeb6b6f, 0x7c3f58]);
     set_draw_colors(0x1234);
     unsafe {
         GAME.init();

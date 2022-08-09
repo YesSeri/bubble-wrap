@@ -27,12 +27,15 @@ impl Game {
         }
     }
     pub fn init(&mut self) {
-        self.add_bubble(30, 45, 8, 0);
+        self.add_bubble(30, 35, 8, 1, false);
+        self.add_bubble(40, 15, 8, 1, true);
+        self.add_bubble(88, 90, 16, 1, false);
+        self.add_bubble(90, 150, 4, 2, true);
     }
-    fn add_bubble(&mut self, x: u8, y: u8, diameter: u8, speed: i8) {
+    fn add_bubble(&mut self, x: u8, y: u8, diameter: u8, speed: u8, right: bool) {
         unsafe {
             self.bubbles
-                .push(Bubble::new(Point::new(x, y), diameter, speed))
+                .push(Bubble::new(Point::new(x, y), diameter, speed, right))
                 .unwrap_unchecked();
         }
     }

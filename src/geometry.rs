@@ -9,42 +9,14 @@ pub struct Point {
 }
 impl Point {
     pub const fn new(x: u8, y: u8) -> Self {
-        let level = y < 80;
+        let level = y <= 80;
         Point { x, y, level }
     }
-    // pub fn right(&mut self) {
-    //     let (wrapped, x) = Point::wrap_add(self.x, 1);
-    //     if wrapped {
-    //         self.switch_level()
-    //     }
-    //     self.x = x;
-    // }
-    // pub fn left(&mut self) {
-    //     let (wrapped, x) = Point::wrap_sub(self.x, 1);
-    //     if wrapped {
-    //         self.switch_level()
-    //     }
-    //     self.x = x;
-    // }
-    // pub fn up(&mut self, speed: i8) {
-    //     self.y = (self.y as i16 - speed as i16) as u8;
-    //     // If y is bigger than screen that can crash game. it can lead to two u8s: 13 - 255.
-    // }
-    // pub fn wrap_add(x: u8, y: u8) -> (bool, u8) {
-    //     let xpr = x + y;
-    //     let wrapped = xpr / 160;
-    //     (wrapped != 0, xpr % 160)
-    // }
-    // pub fn wrap_sub(x: u8, y: u8) -> (bool, u8) {
-    //     let z = x.checked_sub(y);
-    //     (z.is_none(), z.unwrap_or(159))
-    // }
-
     pub fn switch_level(&mut self) {
         if self.level {
-            self.y += 80;
+            self.y += 78;
         } else {
-            self.y -= 80;
+            self.y -= 78;
         }
         self.level = !self.level;
     }
@@ -100,14 +72,15 @@ pub trait Moveable {
 
 #[derive(Debug)]
 pub struct GravSpeed {
-    pub x: i8,
+    pub x: u8,
+    pub right: bool,
     pub y: i8,
 }
 
 const GRAVITY: i8 = 1;
 impl GravSpeed {
-    pub const fn new(x: i8) -> Self {
-        Self { x, y: 0 }
+    pub const fn new(x: u8, right: bool) -> Self {
+        Self { x, y: 0, right }
     }
     pub fn add_gravity(&mut self) {
         self.y += GRAVITY;
