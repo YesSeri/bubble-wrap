@@ -1,6 +1,6 @@
 use crate::geometry::{Moveable, Point, Speed};
 use crate::palette::set_draw_colors;
-use crate::wasm4::{self, trace};
+use crate::wasm4::{self};
 use crate::wasm4::{blit, line};
 
 // Small
