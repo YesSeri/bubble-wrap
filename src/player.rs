@@ -1,6 +1,6 @@
 use crate::geometry::{Moveable, Point, Speed};
 use crate::palette::set_draw_colors;
-use crate::wasm4::{self};
+use crate::wasm4;
 use crate::wasm4::{blit, line};
 
 // Small
@@ -14,6 +14,8 @@ use crate::wasm4::{blit, line};
 // const PLAYER_FLAGS: u32 = 1; // BLIT_2BPP
 // #[rustfmt::skip]
 // const PLAYER: [u8; 32] = [ 0xf0,0x03,0xc0,0x00,0x01,0x55,0x06,0x96,0x16,0x96,0x15,0x55,0x15,0x55,0x2a,0x5a,0xea,0xaa,0xea,0xaa,0xea,0xaa,0xea,0xaa,0xea,0xaa,0xeb,0xfa,0xdf,0xf7,0xc3,0xf0 ];
+const PLAYER_START_X :u8= 15;
+const PLAYER_START_Y:u8 = 158;
 #[derive(Debug)]
 pub struct Player {
     pub point: Point,
@@ -43,7 +45,7 @@ impl Player {
     const PLAYER2: [u8; 32] =[ 0xf0,0x03,0xc0,0x00,0x01,0x55,0x06,0x96,0x16,0x96,0x15,0x55,0x15,0x55,0x2a,0x5a,0xea,0xaa,0xea,0xaa,0xea,0xaa,0xea,0xaa,0xea,0xaa,0xfa,0xeb,0xfd,0xdf,0xfc,0x03 ];
     pub const fn new() -> Self {
         Self {
-            point: Point::new(15, 158),
+            point: Point::new(PLAYER_START_X, PLAYER_START_Y),
             projectile: None,
             moving: false,
             first_sprite: false,
@@ -76,6 +78,7 @@ impl Player {
             p.draw();
         }
     }
+
     pub fn update(&mut self) {
         let gamepad = unsafe { *wasm4::GAMEPAD1 };
         if gamepad & wasm4::BUTTON_RIGHT != 0 {
@@ -126,6 +129,12 @@ impl Player {
         } else {
             Point::new(160, self.point.y)
         }
+    }
+
+    pub fn reset(&mut self) {
+        self.point.x = PLAYER_START_X;
+        self.point.y = PLAYER_START_Y;
+		self.point.level = false;
     }
 }
 impl Moveable for Player {

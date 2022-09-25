@@ -1,5 +1,7 @@
 use crate::bubble::Bubble;
 use crate::player::Player;
+use crate::wasm4;
+use crate::wasm4::trace;
 use crate::Point;
 // use arrayvec::ArrayVec as Vec;
 use heapless::Vec;
@@ -12,6 +14,7 @@ pub enum GameState {
 #[derive(Debug)]
 pub struct Game {
     frame_count: u32,
+    pub difficulty: u8,
     bubbles: Vec<Bubble, 16>,
     player: Player,
     pub game_state: GameState,
@@ -22,15 +25,10 @@ impl Game {
         Game {
             frame_count: 0,
             bubbles: Vec::<Bubble, 16>::new(),
+            difficulty: 0,
             player: Player::new(),
             game_state: GameState::Playing,
         }
-    }
-    pub fn init(&mut self) {
-        self.add_bubble(30, 35, 8, 1, false);
-        self.add_bubble(40, 15, 8, 1, true);
-        self.add_bubble(88, 90, 16, 1, false);
-        self.add_bubble(90, 150, 4, 2, true);
     }
     fn add_bubble(&mut self, x: u8, y: u8, diameter: u8, speed: u8, right: bool) {
         unsafe {
@@ -90,7 +88,7 @@ impl Game {
         }
         if let Some(r) = remove {
             self.player.projectile = None;
-            self.bubbles.remove(r);
+            self.bubbles.swap_remove(r);
         }
     }
     fn check_player_hit(&mut self) -> bool {
@@ -113,5 +111,73 @@ impl Game {
             }
         }
         false
+    }
+
+    pub fn start_next_level(&mut self) {
+        let gamepad = unsafe { *wasm4::GAMEPAD1 };
+        if gamepad & wasm4::BUTTON_1 != 0 {
+            self.setup_level();
+        }
+    }
+    pub fn setup_level(&mut self) {
+        self.player.reset();
+        self.difficulty += 1;
+
+        if self.difficulty == 1 {
+            self.add_bubble(88, 90, 16, 1, true);
+        }
+        if self.difficulty == 2 {
+            self.add_bubble(20, 10, 12, 2, true);
+        }
+        if self.difficulty == 3 {
+            self.add_bubble(80, 0, 4, 2, false);
+            self.add_bubble(136, 40 + 80, 8, 2, false);
+        }
+        if self.difficulty == 4 {
+            self.add_bubble(80, 0, 4, 1, false);
+            self.add_bubble(136, 40 + 80, 8, 1, true);
+            self.add_bubble(40, 15, 8, 1, true);
+            self.add_bubble(88, 90, 16, 1, false);
+        }
+
+        if self.difficulty == 5 {
+            self.add_bubble(10, 20, 8, 1, true);
+            self.add_bubble(10, 20, 8, 2, true);
+            self.add_bubble(20, 0, 4, 2, false);
+            self.add_bubble(90, 150, 4, 2, true);
+        }
+
+        if self.difficulty == 6 {
+            self.add_bubble(40, 15, 8, 1, true);
+            self.add_bubble(88, 90, 16, 1, true);
+            self.add_bubble(90, 150, 4, 1, true);
+            self.add_bubble(30, 35, 8, 1, false);
+            self.add_bubble(40, 155, 8, 1, true);
+            self.add_bubble(40, 15, 8, 1, true);
+			self.add_bubble(10, 120, 8, 1, false);
+			self.add_bubble(20, 100, 4, 1, false);
+        }
+
+        if self.difficulty == 1 {
+		}
+        // self.add_bubble(10, 20, 8, 2, true);
+        // self.add_bubble(20, 0, 4, 2, false);
+        // self.add_bubble(90, 150, 4, 2, true);
+
+        // self.add_bubble(30, 35, 8, 1, false);
+        // self.add_bubble(40, 15, 8, 1, true);
+        // self.add_bubble(88, 90, 16, 1, false);
+        // self.add_bubble(90, 150, 4, 2, true);
+
+        // self.add_bubble(30, 35, 8, 1, false);
+        // self.add_bubble(40, 15, 8, 1, true);
+        // self.add_bubble(88, 90, 16, 1, false);
+        // self.add_bubble(90, 150, 4, 2, true);
+
+        // self.add_bubble(30, 35, 8, 1, false);
+        // self.add_bubble(40, 15, 8, 1, true);
+        // self.add_bubble(88, 90, 16, 1, false);
+        // self.add_bubble(90, 150, 4, 2, true);
+        self.game_state = GameState::Playing;
     }
 }

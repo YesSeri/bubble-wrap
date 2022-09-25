@@ -1,6 +1,7 @@
 use crate::geometry::{GravSpeed, Moveable, Point};
 use crate::palette::set_draw_colors;
-use crate::wasm4::{oval, rect};
+use crate::pixel_manip::pixel;
+use crate::wasm4::*;
 
 #[derive(Debug)]
 pub struct Bubble {
@@ -19,7 +20,17 @@ impl Bubble {
             ticker: 0,
         }
     }
+
     pub fn draw(&self) {
+        // pixel(10, 10);
+
+        // pixel(11, 10);
+        // pixel(10, 11);
+        // f[0] = 0xff;
+        // f[1] = 0;
+        // f[2] = 0;
+        // unsafe { *FRAMEBUFFER = f }
+
         set_draw_colors(0x42);
         oval(
             self.point.x.into(),
@@ -30,32 +41,32 @@ impl Bubble {
 
         set_draw_colors(0x33);
 
-        for i in 0..2 {
-            rect(
-                self.point.x as i32 + self.diameter as i32 / 2 + i,
-                self.point.y as i32 + self.diameter as i32 / 2 + i,
-                1,
-                1,
-            );
-            rect(
-                self.point.x as i32 + self.diameter as i32 / 2 - i,
-                self.point.y as i32 + self.diameter as i32 / 2 - i,
-                1,
-                1,
-            );
-            rect(
-                self.point.x as i32 + self.diameter as i32 / 2 + i,
-                self.point.y as i32 + self.diameter as i32 / 2 - i,
-                1,
-                1,
-            );
-            rect(
-                self.point.x as i32 + self.diameter as i32 / 2 - i,
-                self.point.y as i32 + self.diameter as i32 / 2 + i,
-                1,
-                1,
-            );
-        }
+        // for i in 0..2 {
+        //     rect(
+        //         self.point.x as i32 + self.diameter as i32 / 2 + i,
+        //         self.point.y as i32 + self.diameter as i32 / 2 + i,
+        //         1,
+        //         1,
+        //     );
+        //     rect(
+        //         self.point.x as i32 + self.diameter as i32 / 2 - i,
+        //         self.point.y as i32 + self.diameter as i32 / 2 - i,
+        //         1,
+        //         1,
+        //     );
+        //     rect(
+        //         self.point.x as i32 + self.diameter as i32 / 2 + i,
+        //         self.point.y as i32 + self.diameter as i32 / 2 - i,
+        //         1,
+        //         1,
+        //     );
+        //     rect(
+        //         self.point.x as i32 + self.diameter as i32 / 2 - i,
+        //         self.point.y as i32 + self.diameter as i32 / 2 + i,
+        //         1,
+        //         1,
+        //     );
+        // }
 
         set_draw_colors(0x1234);
     }
