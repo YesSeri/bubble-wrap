@@ -75,7 +75,6 @@ fn update() {
         let offset_y = 8 * (x / 5) as i32;
         rect(56 + offset_x, 6 + offset_y, 3, 7);
     }
-    // show_color_palette();
 }
 
 fn show_color_palette() {

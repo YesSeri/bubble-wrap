@@ -42,7 +42,6 @@ Bubble shooter. A little figure is running trying to shot bubbles. The bubbles b
 
 ```
   ┌────────────────────────────────┐
-  │                                │
   │   ┌────────────────────────┐   │
   │   │                        │   │
   │   │       │                │   │
@@ -56,9 +55,6 @@ Bubble shooter. A little figure is running trying to shot bubbles. The bubbles b
 │ └───►                       ◄├────────┐
 │     │      │                 │        │
 │     └──────┴─────────────────┘        │
-│                                       │
-│                                       │
-│                                       │
 └───────────────────────────────────────┘
 ```
 
