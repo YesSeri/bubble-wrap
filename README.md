@@ -1,4 +1,4 @@
-# bubble-shooter
+# Bubblewrap
 
 A game written in Rust for the [WASM-4](https://wasm4.org) fantasy console.
 
@@ -38,23 +38,23 @@ Don't panic. Dont use `unwrap()`, or other statements that panic. Use `unwrap_or
 
 ## Idea
 
-Bubble shooter. A little figure is running trying to shot bubbles. The bubbles bounce on the floor. The floor is wrapping, and it is two levels. There can also be walls that stops the balls and/or the player.
+Bubble shooter. A little figure is running trying to shot bubbles. The bubbles bounce on the floor. The floor is wrapping, and it is two levels. 
 
 ```
   ┌────────────────────────────────┐
   │   ┌────────────────────────┐   │
   │   │                        │   │
-  │   │       │                │   │
-┌─┼───►       │               ◄├───┘
-│ │   │       │                │
+  │   │                        │   │
+┌─┼───►                       ◄├───┘
 │ │   │                        │
-│ │   ├────────────────────┬───┤
-│ │   │                    │   │
+│ │   │                        │
+│ │   ├────────────────────────┤
+│ │   │                        │
 │ │   │                        │
 │ │   │                        │
 │ └───►                       ◄├────────┐
-│     │      │                 │        │
-│     └──────┴─────────────────┘        │
+│     │                        │        │
+│     └────────────────────────┘        │
 └───────────────────────────────────────┘
 ```
 
