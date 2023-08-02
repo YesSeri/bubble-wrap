@@ -1,6 +1,6 @@
 # Bubblewrap
 
-A game written in Rust for the [WASM-4](https://wasm4.org) fantasy console.
+A game written in Rust for the [WASM-4](https://wasm4.org) fantasy console. Music was made with [RustMusic4Wasm4](https://github.com/YesSeri/RustMusic4Wasm4)
 
 ## Smaller size tips
 
